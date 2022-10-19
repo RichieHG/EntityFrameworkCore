@@ -4,6 +4,7 @@ using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221019212709_AddRelationOneToManyFluentBookAndPublisher")]
+    partial class AddRelationOneToManyFluentBookAndPublisher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Author_Id");
 
-                    b.ToTable("Author", (string)null);
+                    b.ToTable("Author");
                 });
 
             modelBuilder.Entity("Model.Models.Book", b =>
@@ -82,7 +84,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("Publisher_Id");
 
-                    b.ToTable("Book", (string)null);
+                    b.ToTable("Book");
                 });
 
             modelBuilder.Entity("Model.Models.BookAuthor", b =>
@@ -97,7 +99,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("Book_Id");
 
-                    b.ToTable("BookAuthor", (string)null);
+                    b.ToTable("BookAuthor");
                 });
 
             modelBuilder.Entity("Model.Models.BookDetails", b =>
@@ -119,7 +121,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("BookDetails_Id");
 
-                    b.ToTable("BookDetails", (string)null);
+                    b.ToTable("BookDetails");
                 });
 
             modelBuilder.Entity("Model.Models.Category", b =>
@@ -163,7 +165,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Author_Id");
 
-                    b.ToTable("Fluent_Author", (string)null);
+                    b.ToTable("Fluent_Author");
                 });
 
             modelBuilder.Entity("Model.Models.Fluent_Book", b =>
@@ -199,22 +201,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("Publisher_Id");
 
-                    b.ToTable("Fluent_Book", (string)null);
-                });
-
-            modelBuilder.Entity("Model.Models.Fluent_BookAuthor", b =>
-                {
-                    b.Property<int>("Author_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Book_Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Author_Id", "Book_Id");
-
-                    b.HasIndex("Book_Id");
-
-                    b.ToTable("Fluent_BookAuthor", (string)null);
+                    b.ToTable("Fluent_Book");
                 });
 
             modelBuilder.Entity("Model.Models.Fluent_BookDetails", b =>
@@ -236,7 +223,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("BookDetails_Id");
 
-                    b.ToTable("Fluent_BookDetails", (string)null);
+                    b.ToTable("Fluent_BookDetails");
                 });
 
             modelBuilder.Entity("Model.Models.Fluent_Publisher", b =>
@@ -257,7 +244,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Publisher_Id");
 
-                    b.ToTable("Fluent_Publisher", (string)null);
+                    b.ToTable("Fluent_Publisher");
                 });
 
             modelBuilder.Entity("Model.Models.Genre", b =>
@@ -275,7 +262,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("GenreId");
 
-                    b.ToTable("tb_Genre", (string)null);
+                    b.ToTable("tb_Genre");
                 });
 
             modelBuilder.Entity("Model.Models.Publisher", b =>
@@ -296,7 +283,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Publisher_Id");
 
-                    b.ToTable("Publisher", (string)null);
+                    b.ToTable("Publisher");
                 });
 
             modelBuilder.Entity("Model.Models.Book", b =>
@@ -356,25 +343,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Fluent_Publisher");
                 });
 
-            modelBuilder.Entity("Model.Models.Fluent_BookAuthor", b =>
-                {
-                    b.HasOne("Model.Models.Fluent_Author", "Fluent_Author")
-                        .WithMany("Fluent_BooksAuthors")
-                        .HasForeignKey("Author_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Models.Fluent_Book", "Fluent_Book")
-                        .WithMany("Fluent_BooksAuthors")
-                        .HasForeignKey("Book_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Fluent_Author");
-
-                    b.Navigation("Fluent_Book");
-                });
-
             modelBuilder.Entity("Model.Models.Author", b =>
                 {
                     b.Navigation("BookAuthors");
@@ -389,16 +357,6 @@ namespace DataAccess.Migrations
                 {
                     b.Navigation("Book")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Model.Models.Fluent_Author", b =>
-                {
-                    b.Navigation("Fluent_BooksAuthors");
-                });
-
-            modelBuilder.Entity("Model.Models.Fluent_Book", b =>
-                {
-                    b.Navigation("Fluent_BooksAuthors");
                 });
 
             modelBuilder.Entity("Model.Models.Fluent_BookDetails", b =>
