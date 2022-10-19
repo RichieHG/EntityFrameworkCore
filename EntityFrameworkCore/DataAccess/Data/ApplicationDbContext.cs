@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Model.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace DataAccess.Data
 
         }
 
-
+        public DbSet<Category> Category { get; set; }
+        public DbSet<Genre> Genre { get; set; } 
     }
 }
