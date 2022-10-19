@@ -4,6 +4,7 @@ using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221019165719_AddRelationCategoryAndBookTable")]
+    partial class AddRelationCategoryAndBookTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +59,7 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Book_Id"), 1L, 1);
 
-                    b.Property<int>("BookDetails_Id")
+                    b.Property<int>("Category_Id")
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
@@ -68,58 +70,31 @@ namespace DataAccess.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("Publisher_Id")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Book_Id");
 
-                    b.HasIndex("BookDetails_Id")
-                        .IsUnique();
-
-                    b.HasIndex("Publisher_Id");
+                    b.HasIndex("Category_Id");
 
                     b.ToTable("Book");
                 });
 
-            modelBuilder.Entity("Model.Models.BookAuthor", b =>
+            modelBuilder.Entity("Model.Models.Category", b =>
                 {
-                    b.Property<int>("Author_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Book_Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Author_Id", "Book_Id");
-
-                    b.HasIndex("Book_Id");
-
-                    b.ToTable("BookAuthor");
-                });
-
-            modelBuilder.Entity("Model.Models.BookDetails", b =>
-                {
-                    b.Property<int>("BookDetails_Id")
+                    b.Property<int>("Category_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookDetails_Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Category_Id"), 1L, 1);
 
-                    b.Property<int>("NumberOfChapters")
+                    b.Property<int>("Name")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NumberOfPages")
-                        .HasColumnType("int");
+                    b.HasKey("Category_Id");
 
-                    b.Property<double?>("Weight")
-                        .HasColumnType("float");
-
-                    b.HasKey("BookDetails_Id");
-
-                    b.ToTable("BookDetails");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("Model.Models.Genre", b =>
@@ -163,61 +138,13 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Model.Models.Book", b =>
                 {
-                    b.HasOne("Model.Models.BookDetails", "BookDetails")
-                        .WithOne("Book")
-                        .HasForeignKey("Model.Models.Book", "BookDetails_Id")
+                    b.HasOne("Model.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("Category_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Model.Models.Publisher", "Publisher")
-                        .WithMany("Books")
-                        .HasForeignKey("Publisher_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BookDetails");
-
-                    b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("Model.Models.BookAuthor", b =>
-                {
-                    b.HasOne("Model.Models.Author", "Author")
-                        .WithMany("BookAuthors")
-                        .HasForeignKey("Author_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Models.Book", "Book")
-                        .WithMany("BookAuthors")
-                        .HasForeignKey("Book_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("Model.Models.Author", b =>
-                {
-                    b.Navigation("BookAuthors");
-                });
-
-            modelBuilder.Entity("Model.Models.Book", b =>
-                {
-                    b.Navigation("BookAuthors");
-                });
-
-            modelBuilder.Entity("Model.Models.BookDetails", b =>
-                {
-                    b.Navigation("Book")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Model.Models.Publisher", b =>
-                {
-                    b.Navigation("Books");
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
