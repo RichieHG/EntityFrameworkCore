@@ -46,7 +46,7 @@
                         <td>
                             @item.Fluent_Publisher.Name
                         </td>
-                       @* <td>
+                        <td>
                             @{
                                 var authors = "";
                             }
@@ -55,7 +55,7 @@
                                 authors += @auth.Fluent_Author.FullName + ", ";
                             }
                             @authors.Trim().TrimEnd(',')
-                        </td>*@
+                        </td>
                         <td>
                             <a class="btn btn-primary text-white" asp-action="Upsert" asp-route-Id="@item.Book_Id">
                                 Edit
