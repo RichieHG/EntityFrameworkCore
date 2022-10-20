@@ -11,6 +11,6 @@ namespace Model.Models
     {
         [Key]
         public int Category_Id { get; set; }
-        public int Name { get; set; }
+        public string Name { get; set; }
     }
 }

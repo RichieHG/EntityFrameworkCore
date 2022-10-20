@@ -4,6 +4,7 @@ using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221019232436_AddRawCategoryToTable")]
+    partial class AddRawCategoryToTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,7 +177,7 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Book_Id"), 1L, 1);
 
-                    b.Property<int?>("BookDetails_Id")
+                    b.Property<int>("BookDetails_Id")
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
@@ -196,8 +198,7 @@ namespace DataAccess.Migrations
                     b.HasKey("Book_Id");
 
                     b.HasIndex("BookDetails_Id")
-                        .IsUnique()
-                        .HasFilter("[BookDetails_Id] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("Publisher_Id");
 
@@ -343,7 +344,9 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Model.Models.Fluent_BookDetails", "Fluent_BookDetails")
                         .WithOne("Fluent_Book")
-                        .HasForeignKey("Model.Models.Fluent_Book", "BookDetails_Id");
+                        .HasForeignKey("Model.Models.Fluent_Book", "BookDetails_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Model.Models.Fluent_Publisher", "Fluent_Publisher")
                         .WithMany("Fluent_Books")

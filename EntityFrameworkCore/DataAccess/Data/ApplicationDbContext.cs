@@ -1,6 +1,5 @@
 ﻿using DataAccess.FluentConfig;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Model.Models;
 using System;
 using System.Collections.Generic;
