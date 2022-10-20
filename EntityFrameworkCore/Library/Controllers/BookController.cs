@@ -18,15 +18,25 @@ namespace Library.Controllers
         }
         public IActionResult Index()
         {
-            List<Fluent_Book> books = _db.Fluent_Book.Include(x => x.Fluent_Publisher).ToList();
+            List<Fluent_Book> books = _db.Fluent_Book.Include(x => x.Fluent_Publisher)
+                                        .Include(x => x.Fluent_BooksAuthors)
+                                        .ThenInclude(x => x.Fluent_Author).ToList();
+
+            //List<Fluent_Book> books = _db.Fluent_Book.ToList();
 
             //foreach (var book in books)
             //{
             //    //LeastEfficient
             //    //book.Fluent_Publisher = _db.Fluent_Publisher.FirstOrDefault(x => x.Publisher_Id == book.Publisher_Id);
-                
+
             //    //Explicit Loading (MoreEfficient)
             //    _db.Entry(book).Reference(x => x.Fluent_Publisher).Load();
+            //    _db.Entry(book).Collection(x => x.Fluent_BooksAuthors).Load();
+            //    foreach(var bookAuth in book.Fluent_BooksAuthors)
+            //    {
+            //        _db.Entry(bookAuth).Reference(x => x.Fluent_Author).Load();
+
+            //    }
             //}
             return View(books);
         }
@@ -184,6 +194,61 @@ namespace Library.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult ManageAuthors(int id)
+        {
+            BookAuthorVM bookAuthor = new()
+            {
+                BookAuthorList = _db.Fluent_BookAuthor.Include(b => b.Fluent_Author)
+                                    .Include(b => b.Fluent_Book)
+                                    .Where(x => x.Book_Id == id).ToList(),
+                BookAuthor = new()
+                {
+                    Book_Id = id
+                },
+                Book = _db.Fluent_Book.FirstOrDefault(x => x.Book_Id == id)
+            };
+
+            List<int> tempListOfAssignedAuthors = bookAuthor.BookAuthorList.Select(x => x.Author_Id).ToList();
+
+           bookAuthor.AuthorList = _db.Fluent_Author.Where(x => !tempListOfAssignedAuthors.Contains(x.Author_Id))
+                                                        .Select(x => new SelectListItem()
+                                                        {
+                                                            Text = x.FullName,
+                                                            Value = x.Author_Id.ToString()
+                                                        }).ToList();
+
+            return View(bookAuthor);
+        }
+
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken] //Review the functionality of this
+        public IActionResult ManageAuthors(BookAuthorVM bookAuthorVM)
+        {
+
+            if (bookAuthorVM.BookAuthor.Book_Id != 0 && bookAuthorVM.BookAuthor.Author_Id != 0) //Create
+            {
+                _db.Fluent_BookAuthor.Add(bookAuthorVM.BookAuthor);
+                _db.SaveChanges();
+
+            }
+            return RedirectToAction(nameof(ManageAuthors), new {@id = bookAuthorVM.BookAuthor.Book_Id});
+        }
+
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult RemoveAuthors(BookAuthorVM bookAuthorVM, int authorId)
+        {
+            int bookId = bookAuthorVM.Book.Book_Id;
+            Fluent_BookAuthor bookAuthor = _db.Fluent_BookAuthor.FirstOrDefault(x => x.Author_Id == authorId && x.Book_Id == bookId);
+            if (bookAuthor == null) return NotFound();
+
+            _db.Fluent_BookAuthor.Remove(bookAuthor);
+            _db.SaveChanges();
+
+            return RedirectToAction(nameof(ManageAuthors), new { @id = bookId });
+        }
         private IEnumerable<SelectListItem> LoadPublishers()
         {
             return _db.Fluent_Publisher.Select(x => new SelectListItem
