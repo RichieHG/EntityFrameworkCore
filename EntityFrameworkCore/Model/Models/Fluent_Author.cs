@@ -16,7 +16,7 @@ namespace Model.Models
         public DateTime? BirthDate { get; set; }
         public string? Location { get; set; }
         public string FullName => $"{FirstName} {LastName}";
-        public virtual ICollection<Fluent_BookAuthor> Fluent_BooksAuthors { get; set; }
+        public virtual ICollection<Fluent_BookAuthor>? Fluent_BooksAuthors { get; set; }
 
     }
 }
