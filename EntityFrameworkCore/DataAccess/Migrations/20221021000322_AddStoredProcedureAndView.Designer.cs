@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221020165847_temp")]
-    partial class temp
+    [Migration("20221021000322_AddStoredProcedureAndView")]
+    partial class AddStoredProcedureAndView
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

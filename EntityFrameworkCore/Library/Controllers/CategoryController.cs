@@ -1,6 +1,7 @@
 ﻿using DataAccess.Data;
 using DataAccess.FluentConfig;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Model.Models;
 
 namespace Library.Controllers
@@ -15,7 +16,7 @@ namespace Library.Controllers
         }
         public IActionResult Index()
         {
-            List<Category> categories = _db.Category.ToList();
+            List<Category> categories = _db.Category.AsNoTracking().ToList();
             return View(categories);
         }
 
