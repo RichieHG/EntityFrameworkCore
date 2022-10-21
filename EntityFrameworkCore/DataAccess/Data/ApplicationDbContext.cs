@@ -4,6 +4,7 @@ using Model.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,7 @@ namespace DataAccess.Data
         public DbSet<Fluent_Publisher> Fluent_Publisher { get; set; }
         public DbSet<Fluent_BookDetails> Fluent_BookDetails { get; set; }
         public DbSet<Fluent_BookAuthor> Fluent_BookAuthor { get; set; }
+        public DbSet<BookDetailsFromView> BookDetailsFromView { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,6 +52,8 @@ namespace DataAccess.Data
             modelBuilder.ApplyConfiguration(new Fluent_BookDetailsFluentConfig());
             modelBuilder.ApplyConfiguration(new Fluent_BookFluentConfig());
             modelBuilder.ApplyConfiguration(new Fluent_PublisherFluentConfig());
+
+            modelBuilder.Entity<BookDetailsFromView>().HasNoKey().ToView("GetOnlyBookDetails");
         }
     }
 }

@@ -171,25 +171,42 @@ namespace Library.Controllers
             //var BookList3 = _db.Fluent_Book.Where(b => b.Price > 1000).ToList();
 
 
-            var category = _db.Category.FirstOrDefault();
-            _db.Entry(category).State = EntityState.Modified;
+            //var category = _db.Category.FirstOrDefault();
+            //_db.Entry(category).State = EntityState.Modified;
 
-            _db.SaveChanges();
+            //_db.SaveChanges();
 
-            //Updating Related Data
-            var bookTemp1 = _db.Fluent_Book.Include(b => b.Fluent_BookDetails).FirstOrDefault(b => b.Book_Id == 3);
-            bookTemp1.Fluent_BookDetails.NumberOfChapters = 2222;
-            //bookTemp1.Price = 12345;
-            _db.Fluent_Book.Update(bookTemp1);
-            _db.SaveChanges();
+            ////Updating Related Data
+            //var bookTemp1 = _db.Fluent_Book.Include(b => b.Fluent_BookDetails).FirstOrDefault(b => b.Book_Id == 3);
+            //bookTemp1.Fluent_BookDetails.NumberOfChapters = 2222;
+            ////bookTemp1.Price = 12345;
+            //_db.Fluent_Book.Update(bookTemp1);
+            //_db.SaveChanges();
 
 
-            var bookTemp2 = _db.Fluent_Book.Include(b => b.Fluent_BookDetails).FirstOrDefault(b => b.Book_Id == 3);
-            bookTemp2.Fluent_BookDetails.Weight = 3333;
-            //bookTemp2.Price = 123456;
-            _db.Fluent_Book.Attach(bookTemp2);
-            _db.SaveChanges();
+            //var bookTemp2 = _db.Fluent_Book.Include(b => b.Fluent_BookDetails).FirstOrDefault(b => b.Book_Id == 3);
+            //bookTemp2.Fluent_BookDetails.Weight = 3333;
+            ////bookTemp2.Price = 123456;
+            //_db.Fluent_Book.Attach(bookTemp2);
+            //_db.SaveChanges();
 
+            //VIEWS
+            //var viewList = _db.BookDetailsFromView.ToList();
+            //var viewList1 = _db.BookDetailsFromView.FirstOrDefault();
+            //var viewList2 = _db.BookDetailsFromView.Where(x => x.Price > 1000).ToList();
+
+            //RAW SQL
+            var bookRaw = _db.Fluent_Book.FromSqlRaw("SELECT * FROM dbo.Fluent_Book").ToList();
+
+            //SQL Injection attack prone
+            int id = 5;
+            var bookRawWithParams = _db.Fluent_Book.FromSqlInterpolated($"SELECT * FROM dbo.Fluent_Book WHERE Book_Id={id}").ToList();
+
+            var booksFromSP = _db.Fluent_Book.FromSqlInterpolated($"EXEC dbo.getAllBookDetails {id}").ToList();
+
+            //NET 5 or greater
+            var bookFilter = _db.Fluent_Book.Include(x => x.Fluent_BooksAuthors.Where(z => z.Author_Id == 4)).ToList();
+            var bookFilter2 = _db.Fluent_Book.Include(x => x.Fluent_BooksAuthors.OrderByDescending(z => z.Author_Id).Take(2)).ToList();
 
             return RedirectToAction(nameof(Index));
         }
